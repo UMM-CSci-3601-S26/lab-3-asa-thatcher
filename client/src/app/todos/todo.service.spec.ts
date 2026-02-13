@@ -19,14 +19,14 @@ describe('TodoService', () => {
       _id: 'pat_id',
       owner: 'Pat',
       status: true,
-      body: "Shwoopy doopy",
+      body: "Shwabalooby doo",
       category: 'homework',
     },
     {
       _id: 'jamie_id',
       owner: 'Jamie',
       status: false,
-      body: "Shwoopy doopler",
+      body: "Lodalee doowaa",
       category: 'software design',
     }
   ];
@@ -55,7 +55,25 @@ describe('TodoService', () => {
     // After every test, assert that there are no more pending requests.
     httpTestingController.verify();
   });
+  /*
+  describe('When getCompanies() is called with no parameters', () => {
+    it('calls `api/todosByCompany`', waitForAsync(() => {
+      // Mock the `httpClient.get()` method, so that instead of making an HTTP request,
+      // it just returns our test data.
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testCompanies));
 
+      todoService.getCompanies().subscribe(() => {
+        // The mocked method (`httpClient.get()`) should have been called
+        // exactly one time.
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(todoService.todosByCompanyUrl);
+      });
+    }));
+  });*/
 
   describe('When getTodos() is called with no parameters', () => {
     /* We really don't care what `getTodos()` returns. Since all the
@@ -97,7 +115,7 @@ describe('TodoService', () => {
         //   * An options object containing an empty `HttpParams`
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
-          .toHaveBeenCalledWith(todoService.todoURL, { params: new HttpParams() });
+          .toHaveBeenCalledWith(todoService.todoUrl, { params: new HttpParams() });
       });
     }));
   });
@@ -122,19 +140,36 @@ describe('TodoService', () => {
     * won't actually check what got returned (there won't be an `expect`
     * about the returned value).
     */
-    /*
+
+    it('correctly calls api/todos with filter parameter \'complete\'', () => {
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testTodos));
+
+      todoService.getTodos({ status: 'complete' }).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        // The mocked method should have been called with two arguments:
+        //   * the appropriate URL ('/api/todos' defined in the `TodoService`)
+        //   * An options object containing an `HttpParams` with the `role`:`admin`
+        //     key-value pair.
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(todoService.todoUrl, { params: new HttpParams().set('status', 'complete') });
+      });
+    });
+
     it('correctly calls api/todos with multiple filter parameters', () => {
       const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testTodos));
 
-      todoService.getTodos({ role: 'editor', company: 'IBM', age: 37 }).subscribe(() => {
+      todoService.getTodos({ owner: 'Chris', category: 'groceries', status: 'complete' }).subscribe(() => {
         // This test checks that the call to `todoService.getTodos()` does several things:
         //   * It calls the mocked method (`HttpClient#get()`) exactly once.
         //   * It calls it with the correct endpoint (`todoService.todoUrl`).
         //   * It calls it with the correct parameters:
         //      * There should be three parameters (this makes sure that there aren't extras).
-        //      * There should be a "role:editor" key-value pair.
-        //      * And a "company:IBM" pair.
-        //      * And a "age:37" pair.
+        //      * There should be a "owner:Chris" key-value pair.
+        //      * And a "category:groceries" pair.
+        //      * And a "status:complete" pair.
 
         // This gets the arguments for the first (and in this case only) call to the `mockMethod`.
         const [url, options] = mockedMethod.calls.argsFor(0);
@@ -152,18 +187,18 @@ describe('TodoService', () => {
         expect(calledHttpParams.keys().length)
           .withContext('should have 3 params')
           .toEqual(3);
-        expect(calledHttpParams.get('role'))
-          .withContext('role of editor')
-          .toEqual('editor');
-        expect(calledHttpParams.get('company'))
-          .withContext('company being IBM')
-          .toEqual('IBM');
-        expect(calledHttpParams.get('age'))
-          .withContext('age being 37')
-          .toEqual('37');
+        expect(calledHttpParams.get('owner'))
+          .withContext('owner of Chris')
+          .toEqual('Chris');
+        expect(calledHttpParams.get('category'))
+          .withContext('category being groceries')
+          .toEqual('groceries');
+        expect(calledHttpParams.get('status'))
+          .withContext('status being complete')
+          .toEqual('complete');
       });
     });
-  });*/
+  });
 
   describe('When getTodoById() is given an ID', () => {
     /* We really don't care what `getTodoById()` returns. Since all the
@@ -205,7 +240,7 @@ describe('TodoService', () => {
           .toHaveBeenCalledTimes(1);
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
-          .toHaveBeenCalledWith(`${todoService.todoURL}/${targetId}`);
+          .toHaveBeenCalledWith(`${todoService.todoUrl}/${targetId}`);
       });
     }));
   });
@@ -220,48 +255,46 @@ describe('TodoService', () => {
      * all those complications.
      */
     it('filters by owner', () => {
-      const todoName = 'i';
+      const todoOwner = 'c';
       const filteredTodos = todoService.filterTodos(testTodos, { owner: todoOwner });
-      // There should be two todos with an 'i' in their
-      // owner: Chris and Jamie.
+      // There should be one todo with a 'c' in their
+      // owner: Chris
       expect(filteredTodos.length).toBe(2);
-      // Every returned todo's owner should contain an 'i'.
+      // Every returned todo's name should contain a 'c'.
       filteredTodos.forEach(todo => {
-        expect(todo.owner.indexOf(todoName)).toBeGreaterThanOrEqual(0);
+        expect(todo.owner.indexOf(todoOwner)).toBeGreaterThanOrEqual(0);
       });
     });
 
-    it('filters by category', () > {
-      const todoCategory = 'homework';
+    it('filters by category', () => {
+      const todoCategory = 'groceries';
       const filteredTodos = todoService.filterTodos(testTodos, { category: todoCategory });
-      // There should be just one todo that has UMM as their company.
+      // There should be just one todo that has groceries as their category.
       expect(filteredTodos.length).toBe(1);
-      // Every returned todo's company should contain 'UMM'.
+      // Every returned todo's category should contain 'groceries'.
       filteredTodos.forEach(todo => {
         expect(todo.category.indexOf(todoCategory)).toBeGreaterThanOrEqual(0);
       });
     });
 
     it('filters by owner and category', () => {
-      // There's only one todo (Chris) whose owner
-      // contains an 'i' and whose company contains
-      // an 'M'. There are two whose owner contains
-      // an 'i' and two whose company contains an
-      // an 'M', so this should test combined filtering.
-      const todoName = 'i';
-      const todoCategory = 'M';
-      const filters = { owner: todoName, category: todoCategory };
+      // There's only one todo (Chris) whose name
+      // contains a 'c' and whose category contains
+      // an 'g'.
+      const todoOwner = 'i';
+      const todoCategory = 'g';
+      const filters = { owner: todoOwner, category: todoCategory };
       const filteredTodos = todoService.filterTodos(testTodos, filters);
       // There should be just one todo with these properties.
       expect(filteredTodos.length).toBe(1);
       // Every returned todo should have _both_ these properties.
       filteredTodos.forEach(todo => {
-        expect(todo.owner.indexOf(todoName)).toBeGreaterThanOrEqual(0);
+        expect(todo.owner.indexOf(todoOwner)).toBeGreaterThanOrEqual(0);
         expect(todo.category.indexOf(todoCategory)).toBeGreaterThanOrEqual(0);
       });
     });
   });
-
+  /* Commented out since `addTodo()` isn't implemented yet
   describe('Adding a todo using `addTodo()`', () => {
     it('talks to the right endpoint and is called once', waitForAsync(() => {
       const todo_id = 'pat_id';
@@ -280,8 +313,8 @@ describe('TodoService', () => {
           .toHaveBeenCalledTimes(1);
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
-          .toHaveBeenCalledWith(todoService.todoURL, testTodos[1]);
+          .toHaveBeenCalledWith(todoService.todoUrl, testTodos[1]);
       });
     }));
-  });
+  });*/
 });

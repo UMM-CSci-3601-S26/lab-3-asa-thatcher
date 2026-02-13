@@ -58,7 +58,7 @@ export class TodoListComponent {
   todoOwner = signal<string | undefined>(undefined);
   todoCategory = signal<string | undefined>(undefined);
   todoBody = signal<string | undefined>(undefined);
-  todoStatus = signal<boolean | undefined>(undefined);
+  todoStatus = signal<string | undefined>(undefined);
 
   viewType = signal<'card' | 'list'>('card');
 
@@ -93,8 +93,7 @@ export class TodoListComponent {
             owner,
             body,
             category,
-            status,
-            boolean: undefined
+            status
           })
         ),
         // `catchError` is used to handle errors that might occur in the pipeline. In this case `todoService.getTodos()`
@@ -134,8 +133,7 @@ export class TodoListComponent {
       owner: this.todoOwner(),
       category: this.todoCategory(),
       body: this.todoBody(),
-      status: this.todoStatus(),
-      boolean: undefined
+      status: this.todoStatus()
     });
   });
 }

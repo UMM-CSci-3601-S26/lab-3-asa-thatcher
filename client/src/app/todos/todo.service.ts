@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+//import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Todo } from './todo';
 
@@ -23,7 +23,7 @@ export class TodoService {
   private httpClient = inject(HttpClient);
 
   // The URL for the users part of the server API.
-  readonly todoURL: string = `${environment.apiUrl}todos`;
+  readonly todoUrl: string = `${environment.apiUrl}todos`;
 
   private readonly ownerKey = 'owner';
   private readonly bodyKey = 'body';
@@ -47,7 +47,7 @@ export class TodoService {
    *  from the server after a possibly substantial delay (because we're
    *  contacting a remote server over the Internet).
    */
-  getTodos(filters?: { owner?: string; category?: string; body?: string; status?; boolean}): Observable<Todo[]> {
+  getTodos(filters?: { owner?: string; category?: string; body?: string; status?: string}): Observable<Todo[]> {
     // `HttpParams` is essentially just a map used to hold key-value
     // pairs that are then encoded as "?key1=value1&key2=value2&…" in
     // the URL when we make the call to `.get()` below.
@@ -68,7 +68,7 @@ export class TodoService {
     }
     // Send the HTTP GET request with the given URL and parameters.
     // That will return the desired `Observable<User[]>`.
-    return this.httpClient.get<Todo[]>(this.todoURL, {
+    return this.httpClient.get<Todo[]>(this.todoUrl, {
       params: httpParams,
     });
   }
@@ -81,7 +81,7 @@ export class TodoService {
    */
   getTodoById(id: string): Observable<Todo> {
     // The input to get could also be written as (this.userUrl + '/' + id)
-    return this.httpClient.get<Todo>(`${this.todoURL}/${id}`);
+    return this.httpClient.get<Todo>(`${this.todoUrl}/${id}`);
   }
 
   /**
@@ -97,7 +97,7 @@ export class TodoService {
    * @param filters the map of key-value pairs used for the filtering
    * @returns an array of `Users` matching the given filters
    */
-  filterTodos(todos: Todo[], filters: { owner?: string; category?: string; body?: string; status?; boolean }): Todo[] { // skipcq: JS-0105
+  filterTodos(todos: Todo[], filters: { owner?: string; category?: string; body?: string; status?: string; limit?: number}): Todo[] { // skipcq: JS-0105
     let filteredTodos = todos;
 
     // Filter by owner
@@ -126,10 +126,10 @@ export class TodoService {
 
     return filteredTodos;
   }
-
+  /*
   addTodo(newTodo: Partial<Todo>): Observable<string> {
     // Send post request to add a new user with the user data as the body.
     // `res.id` should be the MongoDB ID of the newly added `User`.
-    return this.httpClient.post<{id: string}>(this.todoURL, newTodo).pipe(map(response => response.id));
-  }
+    return this.httpClient.post<{id: string}>(this.todoUrl, newTodo).pipe(map(response => response.id));
+  }*/
 }
