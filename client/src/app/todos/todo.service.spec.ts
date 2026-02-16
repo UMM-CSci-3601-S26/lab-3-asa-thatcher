@@ -255,12 +255,11 @@ describe('TodoService', () => {
      * all those complications.
      */
     it('filters by owner', () => {
-      const todoOwner = 'c';
+      const todoOwner = 'Chris';
       const filteredTodos = todoService.filterTodos(testTodos, { owner: todoOwner });
-      // There should be one todo with a 'c' in their
-      // owner: Chris
-      expect(filteredTodos.length).toBe(2);
-      // Every returned todo's name should contain a 'c'.
+      // There should be one todo with an owner of 'Chris'.
+      expect(filteredTodos.length).toBe(1);
+      // Every returned todo's owner should be 'Chris'.
       filteredTodos.forEach(todo => {
         expect(todo.owner.indexOf(todoOwner)).toBeGreaterThanOrEqual(0);
       });
@@ -278,15 +277,13 @@ describe('TodoService', () => {
     });
 
     it('filters by owner and category', () => {
-      // There's only one todo (Chris) whose name
-      // contains a 'c' and whose category contains
-      // an 'g'.
+      // Only two todos meet these criteria
       const todoOwner = 'i';
       const todoCategory = 'g';
       const filters = { owner: todoOwner, category: todoCategory };
       const filteredTodos = todoService.filterTodos(testTodos, filters);
-      // There should be just one todo with these properties.
-      expect(filteredTodos.length).toBe(1);
+      // There should be just two todos with these properties.
+      expect(filteredTodos.length).toBe(2);
       // Every returned todo should have _both_ these properties.
       filteredTodos.forEach(todo => {
         expect(todo.owner.indexOf(todoOwner)).toBeGreaterThanOrEqual(0);
@@ -294,6 +291,9 @@ describe('TodoService', () => {
       });
     });
   });
+
+  // Coverage requires tests for filtering body and status, which will be part of a future PR
+
   /* Commented out since `addTodo()` isn't implemented yet
   describe('Adding a todo using `addTodo()`', () => {
     it('talks to the right endpoint and is called once', waitForAsync(() => {
