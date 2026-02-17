@@ -6,6 +6,7 @@ import static com.mongodb.client.model.Filters.regex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -271,6 +272,41 @@ public class TodoController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
+  public void addNewTodo(Context ctx) {
+    /*
+    * The follow chain of statements uses the Javalin validator system
+    * to verify that instance of `User` provided in this context is
+    * a "legal" todo. It checks the following things (in order):
+    * If any of these checks fail, the Javalin system will throw a
+    * `BadRequestResponse` with an appropriate error message.
+    */
+    String body = ctx.body();
+    Todo newTodo = ctx.bodyValidator(Todo.class)
+    .check(todo -> todo.owner != null && todo.owner.length() > 0,
+        "Todo must have a non-empty owner; body was " + body)
+    .check(todo -> todo.body != null && todo.body.length() > 0,
+        "Todo must have a non-empty body; body was " + body)
+    .check(todo -> todo.category != null && todo.category.length() > 0,
+        "Todo must have a non-empty category; body was " + body)
+    .check(todo -> todo.status != null,
+        "Todo must have a valid boolean status; body was " + body)
+    .get();
+
+    // Add the new todo to the database
+    todosCollection.insertOne(newTodo);
+
+    // Set the JSON response to be the `_id` of the newly created todo.
+    // This gives the client the opportunity to know the ID of the new todo,
+    // which it can then use to perform further operations (e.g., a GET request
+    // to get and display the details of the new todo).
+    ctx.json(Map.of("id", newTodo._id));
+    // 201 (`HttpStatus.CREATED`) is the HTTP code for when we successfully
+    // create a new resource (a todo in this case).
+    // See, e.g., https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+    // for a description of the various response codes.
+    ctx.status(HttpStatus.CREATED);
+}
+
   /**
    * Sets up routes for the `todo` collection endpoints.
    * A TodoController instance handles the todo endpoints,
@@ -306,7 +342,7 @@ public class TodoController implements Controller {
 
     // Add new todo with the todo info being in the JSON body
     // of the HTTP request
-    //server.post(API_TODOS, this::addNewTodo);
+    server.post(API_TODOS, this::addNewTodo);
 
     // Delete the specified todo
     //server.delete(API_TODOS_BY_ID, this::deleteTodos);

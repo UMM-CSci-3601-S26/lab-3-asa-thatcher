@@ -1,4 +1,3 @@
-/*
 import { Location } from '@angular/common';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush, tick, waitForAsync } from '@angular/core/testing';
@@ -98,26 +97,6 @@ describe('AddTodoComponent', () => {
       ownerControl.setValue('Bad2Th3B0ne');
       expect(ownerControl.valid).toBeTruthy();
     });
-
-    it('should fail if we provide an "existing" owner', () => {
-      // We're assuming that "abc123" and "123abc" already
-      // exist so we disallow them.
-      ownerControl.setValue('abc123');
-      expect(ownerControl.valid).toBeFalsy();
-      expect(ownerControl.hasError('existingName')).toBeTruthy();
-
-      ownerControl.setValue('123abc');
-      expect(ownerControl.valid).toBeFalsy();
-      expect(ownerControl.hasError('existingName')).toBeTruthy();
-    });
-  });
-
-  describe('The company field', () => {
-    it('should allow empty values', () => {
-      const companyControl = addTodoForm.controls.company;
-      companyControl.setValue('');
-      expect(companyControl.valid).toBeTruthy();
-    });
   });
 
   describe('getErrorMessage()', () => {
@@ -127,7 +106,7 @@ describe('AddTodoComponent', () => {
       // map in the component.
       const controlOwner: keyof typeof addTodoComponent.addTodoValidationMessages = 'owner';
       addTodoComponent.addTodoForm.get(controlOwner).setErrors({'required': true});
-      expect(addTodoComponent.getErrorMessage(controlOwner)).toEqual('Name is required');
+      expect(addTodoComponent.getErrorMessage(controlOwner)).toEqual('Owner is required');
 
       // We don't need the type statement here because we're not using the
       // same (previously typed) variable. We could use a `let` and the type statement
@@ -295,5 +274,3 @@ describe('AddTodoComponent#submitForm()', () => {
     expect(location.path()).toBe(path);
   });
 });
-
-*/

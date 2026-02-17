@@ -1,4 +1,3 @@
-/*
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,6 +44,17 @@ export class AddTodoComponent {
     // The category and body fields don't matter much
     category: new FormControl(''),
     body: new FormControl(''),
+
+    // Status must be a boolean value (true or false)
+    status: new FormControl<boolean>(null, Validators.compose([
+      Validators.required,
+      (fc) => {
+        if (fc.value !== true && fc.value !== false) {
+          return ({boolean: true});
+        }
+        return null;
+      }
+    ])),
   });
 
 
@@ -55,6 +65,20 @@ export class AddTodoComponent {
       {type: 'required', message: 'Owner is required'},
       {type: 'minlength', message: 'Owner must be at least 2 characters long'},
       {type: 'maxlength', message: 'Owner cannot be more than 50 characters long'}
+    ],
+    category: [
+      {type: 'required', message: 'Category is required'},
+      {type: 'minlength', message: 'Category must be at least 2 characters long'},
+      {type: 'maxlength', message: 'Category cannot be more than 50 characters long'}
+    ],
+    body: [
+      {type: 'required', message: 'Body is required'},
+      {type: 'minlength', message: 'Body must be at least 2 characters long'},
+      {type: 'maxlength', message: 'Bidt cannot be more than 500 characters long'}
+    ],
+    status: [
+      {type: 'required', message: 'Status is required'},
+      {type: 'boolean', message: 'Status must be a valid boolean value (true or false)'},
     ],
   };
 
@@ -107,4 +131,3 @@ export class AddTodoComponent {
   }
 
 }
-*/
