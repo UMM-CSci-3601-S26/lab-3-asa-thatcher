@@ -10,7 +10,7 @@
             <mat-form-field>
               <mat-label>Owner</mat-label>
               <input matInput formControlName="owner"
-                required>
+                data-test="owner" required>
               @if (formControlHasError('owner')) {
                 <mat-error data-test="ownerError">
                   {{getErrorMessage('owner')}}
@@ -20,8 +20,7 @@
 
             <mat-form-field>
               <mat-label>Category</mat-label>
-              <input matInput formControlName="category"
-                required>
+              <input matInput formControlName="category" data-test="category" required>
               @if (formControlHasError('category')) {
                 <mat-error data-test="categoryError">
                   {{getErrorMessage('category')}}
@@ -41,7 +40,7 @@
 
             <mat-form-field>
               <mat-label>Status</mat-label>
-              <mat-select formControlName="status" required>
+              <mat-select formControlName="status" data-test="status" required>
                 <mat-option [value]="false">Incomplete</mat-option>
                 <mat-option [value]="true">Complete</mat-option>
               </mat-select>
