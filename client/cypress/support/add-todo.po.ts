@@ -7,7 +7,7 @@ export class AddTodoPage {
   private readonly button = '[data-test=confirmAddTodoButton]';
   private readonly snackBar = '.mat-mdc-simple-snack-bar';
   private readonly ownerFieldName = 'owner';
-  private readonly bodyFieldName = 'body';
+  private readonly bodyFieldName = '[data-test="body"]';
   private readonly categoryFieldName = 'category';
   private readonly statusFieldName = 'status';
   private readonly formFieldSelector = 'mat-form-field';

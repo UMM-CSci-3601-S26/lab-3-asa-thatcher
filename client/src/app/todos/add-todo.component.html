@@ -31,8 +31,7 @@
 
             <mat-form-field>
               <mat-label>Body</mat-label>
-              <input matInput formControlName="body"
-                required>
+              <input matInput formControlName="body" data-test="body" required>
               @if (formControlHasError('body')) {
                 <mat-error data-test="bodyError">
                   {{getErrorMessage('body')}}
