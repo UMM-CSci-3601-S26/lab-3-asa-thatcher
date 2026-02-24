@@ -6,10 +6,10 @@ export class AddTodoPage {
   private readonly title = '.add-todo-title';
   private readonly button = '[data-test=confirmAddTodoButton]';
   private readonly snackBar = '.mat-mdc-simple-snack-bar';
-  private readonly ownerFieldName = 'owner';
+  private readonly ownerFieldName = '[data-test="owner"]';
   private readonly bodyFieldName = '[data-test="body"]';
-  private readonly categoryFieldName = 'category';
-  private readonly statusFieldName = 'status';
+  private readonly categoryFieldName = '[data-test="category"]';
+  private readonly statusFieldName = '[data-test="status"]';
   private readonly formFieldSelector = 'mat-form-field';
   private readonly dropDownSelector = 'mat-option';
 
@@ -29,11 +29,11 @@ export class AddTodoPage {
     // Find and click the drop down
     return select.click()
       // Select and click the desired value from the resulting menu
-      .get(`${this.dropDownSelector}[value="${value}"]`).click();
+      .get(`${this.dropDownSelector}`).contains(value).click();
   }
 
   getFormField(fieldName: string) {
-    return cy.get(`${this.formFieldSelector} [formcontrolname=${fieldName}]`);
+    return cy.get(`${this.formFieldSelector} ${fieldName}`);
   }
 
   getSnackBar() {
@@ -46,9 +46,12 @@ export class AddTodoPage {
 
   addTodo(newTodo: Todo) {
     this.getFormField(this.ownerFieldName).type(newTodo.owner);
-    this.getFormField(this.bodyFieldName).type(newTodo.body);
+    if (newTodo.body) { // One test uses a null body, so we need to check it before typing
+      this.getFormField(this.bodyFieldName).type(newTodo.body);
+    }
     this.getFormField(this.categoryFieldName).type(newTodo.category);
-    this.selectMatSelectValue(this.getFormField('status'), newTodo.status.toString());
+    const statusLabel = newTodo.status ? 'Complete' : 'Incomplete'; // Since the form dropdown maps true/false to Complete/Incomplete, we need to convert before selecting the value
+    this.selectMatSelectValue(this.getFormField(this.statusFieldName), statusLabel);
     return this.addTodoButton().click();
   }
 }

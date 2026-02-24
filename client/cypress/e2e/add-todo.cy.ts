@@ -17,12 +17,13 @@ describe('Add todo', () => {
     // are filled. Once the last (`#emailField`) is filled, then the button should
     // become enabled.
     page.addTodoButton().should('be.disabled');
-    page.getFormField('owner').type('test');
+    page.getFormField('[data-test="owner"]').type('test');
     page.addTodoButton().should('be.disabled');
-    page.getFormField('body').type('test');
+    page.getFormField('[data-test="body"]').type('test');
     page.addTodoButton().should('be.disabled');
-    page.getFormField('category').type('test');
+    page.getFormField('[data-test="category"]').type('test');
     page.addTodoButton().should('be.disabled');
+    page.selectMatSelectValue(page.getFormField('[data-test="status"]'), 'Complete');
     // all the required fields have valid input, then it should be enabled
     page.addTodoButton().should('be.enabled');
   });
@@ -31,44 +32,44 @@ describe('Add todo', () => {
     // Before doing anything there shouldn't be an error
     cy.get('[data-test=ownerError]').should('not.exist');
     // Just clicking the name field without entering anything should cause an error message
-    page.getFormField('owner').click().blur();
+    page.getFormField('[data-test="owner"]').click().blur();
     cy.get('[data-test=ownerError]').should('exist').and('be.visible');
     // Some more tests for various invalid name inputs
-    page.getFormField('owner').type('J').blur();
+    page.getFormField('[data-test="owner"]').type('J').blur();
     cy.get('[data-test=ownerError]').should('exist').and('be.visible');
     page
-      .getFormField('owner')
+      .getFormField('[data-test="owner"]')
       .clear()
       .type('This is a very long name that goes beyond the 50 character limit')
       .blur();
     cy.get('[data-test=ownerError]').should('exist').and('be.visible');
     // Entering a valid name should remove the error.
-    page.getFormField('owner').clear().type('John Smith').blur();
+    page.getFormField('[data-test="owner"]').clear().type('John Smith').blur();
     cy.get('[data-test=ownerError]').should('not.exist');
 
     // Before doing anything there shouldn't be an error
     cy.get('[data-test=categoryError]').should('not.exist');
     // Just clicking the category field without entering anything should cause an error message
-    page.getFormField('category').click().blur();
+    page.getFormField('[data-test="category"]').click().blur();
     // Some more tests for various invalid category inputs
     cy.get('[data-test=categoryError]').should('exist').and('be.visible');
-    page.getFormField('category').type('t').blur();
+    page.getFormField('[data-test="category"]').type('t').blur();
     cy.get('[data-test=categoryError]').should('exist').and('be.visible');
     // Entering a valid category should remove the error.
-    page.getFormField('category').clear().type('work').blur();
+    page.getFormField('[data-test="category"]').clear().type('work').blur();
     cy.get('[data-test=categoryError]').should('not.exist');
 
     // Before doing anything there shouldn't be an error
     cy.get('[data-test=bodyError]').should('not.exist');
-    // Just clicking the email field without entering anything should cause an error message
-    page.getFormField('body').click().blur();
-    // Some more tests for various invalid email inputs
+    // Just clicking the body field without entering anything should cause an error message
+    page.getFormField('[data-test="body"]').click().blur();
+    // Some more tests for various invalid body inputs
     cy.get('[data-test=bodyError]').should('exist').and('be.visible');
-    page.getFormField('body').type('t').blur();
+    page.getFormField('[data-test="body"]').type('t').blur();
     cy.get('[data-test=bodyError]').should('exist').and('be.visible');
-    // Entering a valid email should remove the error.
-    page.getFormField('body').clear().type('todo test here').blur();
-    cy.get('[data-test=emailError]').should('not.exist');
+    // Entering a valid body should remove the error.
+    page.getFormField('[data-test="body"]').clear().type('todo test here').blur();
+    cy.get('[data-test=bodyError]').should('not.exist');
   });
 
   describe('Adding a new todo', () => {
@@ -81,7 +82,7 @@ describe('Add todo', () => {
         _id: null,
         owner: 'Test Todo',
         category: 'test',
-        body: 'Test body',
+        body: 'Test Body',
         status: true,
       };
 
@@ -120,40 +121,33 @@ describe('Add todo', () => {
       // The new todo should have all the same attributes as we entered
       cy.get('.todo-card-owner').should('have.text', todo.owner);
       cy.get('.todo-card-body').should('have.text', todo.body);
-      cy.get('.todo-card-status').should('have.text', todo.status);
+      cy.get('.todo-card-status').should('have.text', String(todo.status));
       cy.get('.todo-card-category').should('have.text', todo.category);
       // We should see the confirmation message at the bottom of the screen
       page.getSnackBar().should('contain', `Added todo ${todo.owner}`);
     });
 
-    it('Should fail with no company', () => {
+    it('Should fail with no body', () => {
       const todo: Todo = {
         _id: null,
         owner: 'Test Todo',
         category: 'test',
-        body: null, // The company being set to null means nothing will be typed for it
+        body: null, // The body being set to null means nothing will be typed for it
         status: true,
       };
 
-      // Here we're _not_ expecting to route to `/api/todos` since adding this
-      // todo should fail. So we don't add `cy.intercept()` and `cy.wait()` calls
-      // around this `page.addTodo(todo)` call. If we _did_ add them, the test wouldn't
-      // actually fail because a `cy.wait()` that times out isn't considered a failure,
-      // although we could catch the timeout and turn it into a failure if we needed to.
-      page.addTodo(todo);
+      // Fill only the required fields except body to keep the form invalid
+      page.getFormField('[data-test="owner"]').type(todo.owner);
+      page.getFormField('[data-test="category"]').type(todo.category);
+      page.selectMatSelectValue(page.getFormField('[data-test="status"]'), 'Complete');
 
-      // We should get an error message
-      page.getSnackBar().should('contain', 'Tried to add an illegal new todo');
+      // The add button should remain disabled when body is empty
+      page.addTodoButton().should('be.disabled');
 
       // We should have stayed on the new todo page
       cy.url()
         .should('not.match', /\/todos\/[0-9a-fA-F]{24}$/)
         .should('match', /\/todos\/new$/);
-
-      // The things we entered in the form should still be there
-      page.getFormField('owner').should('have.value', todo.owner);
-      page.getFormField('category').should('have.value', todo.category);
-      page.getFormField('status').should('have.value', true);
     });
   });
 });

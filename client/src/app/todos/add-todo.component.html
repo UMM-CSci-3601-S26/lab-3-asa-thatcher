@@ -9,8 +9,7 @@
           <div class="flex-col">
             <mat-form-field>
               <mat-label>Owner</mat-label>
-              <input matInput formControlName="owner"
-                data-test="owner" required>
+              <input matInput formControlName="owner" data-test="owner" required>
               @if (formControlHasError('owner')) {
                 <mat-error data-test="ownerError">
                   {{getErrorMessage('owner')}}
@@ -41,8 +40,9 @@
             <mat-form-field>
               <mat-label>Status</mat-label>
               <mat-select formControlName="status" data-test="status" required>
-                <mat-option [value]="false">Incomplete</mat-option>
+                <!-- This is where we handle converting client string input to actual bool values -->
                 <mat-option [value]="true">Complete</mat-option>
+                <mat-option [value]="false">Incomplete</mat-option>
               </mat-select>
               @if (formControlHasError('status')) {
                 <mat-error data-test="statusError">
