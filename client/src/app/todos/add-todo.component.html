@@ -1,4 +1,3 @@
-<!--
 <div class="flex-row">
   <div class="flex-1">
     <form [formGroup]="addTodoForm" (ngSubmit)="submitForm();">
@@ -10,8 +9,7 @@
           <div class="flex-col">
             <mat-form-field>
               <mat-label>Owner</mat-label>
-              <input matInput formControlName="owner"
-                required>
+              <input matInput formControlName="owner" data-test="owner" required>
               @if (formControlHasError('owner')) {
                 <mat-error data-test="ownerError">
                   {{getErrorMessage('owner')}}
@@ -21,9 +19,38 @@
 
             <mat-form-field>
               <mat-label>Category</mat-label>
-              <input matInput formControlName="category">
-              <mat-hint>Not required in Angular for demonstration, still required by server</mat-hint>
+              <input matInput formControlName="category" data-test="category" required>
+              @if (formControlHasError('category')) {
+                <mat-error data-test="categoryError">
+                  {{getErrorMessage('category')}}
+                </mat-error>
+              }
             </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Body</mat-label>
+              <input matInput formControlName="body" data-test="body" required>
+              @if (formControlHasError('body')) {
+                <mat-error data-test="bodyError">
+                  {{getErrorMessage('body')}}
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status" data-test="status" required>
+                <!-- This is where we handle converting client string input to actual bool values -->
+                <mat-option [value]="true">Complete</mat-option>
+                <mat-option [value]="false">Incomplete</mat-option>
+              </mat-select>
+              @if (formControlHasError('status')) {
+                <mat-error data-test="statusError">
+                  {{getErrorMessage('status')}}
+                </mat-error>
+              }
+            </mat-form-field>
+
           </div>
 
         </mat-card-content>
@@ -43,4 +70,3 @@
     </form>
   </div>
 </div>
--->

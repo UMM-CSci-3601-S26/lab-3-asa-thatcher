@@ -1,4 +1,3 @@
-/*
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,7 +21,6 @@ export class AddTodoComponent {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
-
   addTodoForm = new FormGroup({
     // We allow alphanumeric input and limit the length for owner.
     owner: new FormControl('', Validators.compose([
@@ -41,12 +39,42 @@ export class AddTodoComponent {
         }
       },
     ])),
+    body: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(500),
+      (fc) => {
+        if (fc.value.toLowerCase() === 'abc123' || fc.value.toLowerCase() === '123abc') {
+          return ({existingName: true});
+        } else {
+          return null;
+        }
+      },
+    ])),
+    category: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(50),
+      (fc) => {
+        if (fc.value.toLowerCase() === 'abc123' || fc.value.toLowerCase() === '123abc') {
+          return ({existingName: true});
+        } else {
+          return null;
+        }
+      },
+    ])),
 
-    // The category and body fields don't matter much
-    category: new FormControl(''),
-    body: new FormControl(''),
+    // Status must be a boolean value (true or false)
+    status: new FormControl<boolean>(null, Validators.compose([
+      Validators.required,
+      (fc) => {
+        if (fc.value !== true && fc.value !== false) {
+          return ({boolean: true});
+        }
+        return null;
+      }
+    ])),
   });
-
 
   // We can only display one error at a time,
   // the order the messages are defined in is the order they will display in.
@@ -55,6 +83,20 @@ export class AddTodoComponent {
       {type: 'required', message: 'Owner is required'},
       {type: 'minlength', message: 'Owner must be at least 2 characters long'},
       {type: 'maxlength', message: 'Owner cannot be more than 50 characters long'}
+    ],
+    category: [
+      {type: 'required', message: 'Category is required'},
+      {type: 'minlength', message: 'Category must be at least 2 characters long'},
+      {type: 'maxlength', message: 'Category cannot be more than 50 characters long'}
+    ],
+    body: [
+      {type: 'required', message: 'Body is required'},
+      {type: 'minlength', message: 'Body must be at least 2 characters long'},
+      {type: 'maxlength', message: 'Bidt cannot be more than 50 characters long'}
+    ],
+    status: [
+      {type: 'required', message: 'Status is required'},
+      {type: 'boolean', message: 'Status must be a valid boolean value (true or false)'}, // The form control on the add-todo page converts complete/incomplete to true/false, so this shouldn't ever error
     ],
   };
 
@@ -105,6 +147,4 @@ export class AddTodoComponent {
       },
     });
   }
-
 }
-*/
