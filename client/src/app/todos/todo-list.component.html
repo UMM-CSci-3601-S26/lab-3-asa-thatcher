@@ -16,13 +16,29 @@
             <!-- Signals are their own getter and setter if left uninvoked like that -->
             <!-- The [()] syntax is saying 'Do both the getting and setting with the respective get/set of the signal' -->
             <input matInput data-test="todoOwnerInput" placeholder="Filter by owner" [(ngModel)]="todoOwner">
-            <mat-hint>Filtered on client</mat-hint>
+            <mat-hint>Filtered on server</mat-hint>
           </mat-form-field>
 
           <mat-form-field class="input-field">
             <mat-label>Category</mat-label>
             <input matInput data-test="todoCategoryInput" placeholder="Filter by category" [(ngModel)]="todoCategory">
             <mat-hint>Filtered on client</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field class="input-field">
+            <mat-label>Body</mat-label>
+            <input matInput data-test="todoCategoryInput" placeholder="Filter by body" [(ngModel)]="todoBody">
+            <mat-hint>Filtered on client</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field class="input-field">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="todoStatus" data-test="todoStatusSelect">
+              <mat-option>--</mat-option>
+              <mat-option value="complete">Complete</mat-option>
+              <mat-option value="incomplete">Incomplete</mat-option>
+            </mat-select>
+            <mat-hint>Filtered on server</mat-hint>
           </mat-form-field>
         </div>
 

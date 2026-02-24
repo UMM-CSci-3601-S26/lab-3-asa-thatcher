@@ -71,8 +71,8 @@ export class TodoListComponent {
   // of those _signals_ to _observables_ using `toObservable()`. Those are then used in the
   // definition of `serverFilteredTodos` below to trigger updates to the `Observable` there.
   private todoOwner$ = toObservable(this.todoOwner);
-  private todoBody$ = toObservable(this.todoBody);
-  private todoCategory$ = toObservable(this.todoCategory);
+  // private todoBody$ = toObservable(this.todoBody);
+  // private todoCategory$ = toObservable(this.todoCategory);
   private todoStatus$ = toObservable(this.todoStatus);
 
   // We ultimately `toSignal` this to be able to access it synchronously, but we do all the RXJS operations
@@ -84,15 +84,15 @@ export class TodoListComponent {
     // the corresponding `todoRole$` and/or `todoAge$` observables to change, which will cause `combineLatest()`
     // to send a new pair down the pipe.
     toSignal(
-      combineLatest([this.todoOwner$, this.todoBody$, this.todoCategory$, this.todoStatus$]).pipe(
+      combineLatest([this.todoOwner$, /*this.todoBody$, this.todoCategory$,*/ this.todoStatus$]).pipe(
         // `switchMap` maps from one observable to another. In this case, we're taking `role` and `age` and passing
         // them as arguments to `todoService.getTodos()`, which then returns a new observable that contains the
         // results.
-        switchMap(([owner, body, category, status]) =>
+        switchMap(([owner, /*body/, category,*/ status]) =>
           this.todoService.getTodos({
             owner,
-            body,
-            category,
+            /*body,
+            category,*/
             status
           })
         ),
@@ -130,10 +130,10 @@ export class TodoListComponent {
   filteredTodos = computed(() => {
     const serverFilteredTodos = this.serverFilteredTodos();
     return this.todoService.filterTodos(serverFilteredTodos, {
-      owner: this.todoOwner(),
+      //owner: this.todoOwner(),
       category: this.todoCategory(),
       body: this.todoBody(),
-      status: this.todoStatus()
+      //status: this.todoStatus()
     });
   });
 }
