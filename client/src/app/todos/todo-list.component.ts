@@ -59,6 +59,7 @@ export class TodoListComponent {
   todoCategory = signal<string | undefined>(undefined);
   todoBody = signal<string | undefined>(undefined);
   todoStatus = signal<string | undefined>(undefined);
+  todoLimit = signal<number | undefined>(undefined);
 
   viewType = signal<'card' | 'list'>('card');
 
@@ -71,9 +72,8 @@ export class TodoListComponent {
   // of those _signals_ to _observables_ using `toObservable()`. Those are then used in the
   // definition of `serverFilteredTodos` below to trigger updates to the `Observable` there.
   private todoOwner$ = toObservable(this.todoOwner);
-  // private todoBody$ = toObservable(this.todoBody);
-  // private todoCategory$ = toObservable(this.todoCategory);
   private todoStatus$ = toObservable(this.todoStatus);
+  private todoLimit$ = toObservable(this.todoLimit);
 
   // We ultimately `toSignal` this to be able to access it synchronously, but we do all the RXJS operations
   // "inside" the `toSignal()` call processing and transforming the observables there.
@@ -84,15 +84,14 @@ export class TodoListComponent {
     // the corresponding `todoRole$` and/or `todoAge$` observables to change, which will cause `combineLatest()`
     // to send a new pair down the pipe.
     toSignal(
-      combineLatest([this.todoOwner$, /*this.todoBody$, this.todoCategory$,*/ this.todoStatus$]).pipe(
+      combineLatest([this.todoLimit$, /*this.todoOwner$,*/ this.todoStatus$]).pipe(
         // `switchMap` maps from one observable to another. In this case, we're taking `role` and `age` and passing
         // them as arguments to `todoService.getTodos()`, which then returns a new observable that contains the
         // results.
-        switchMap(([owner, /*body/, category,*/ status]) =>
+        switchMap(([limit, /*owner,*/ status]) =>
           this.todoService.getTodos({
-            owner,
-            /*body,
-            category,*/
+            limit,
+            //owner,
             status
           })
         ),
@@ -130,10 +129,9 @@ export class TodoListComponent {
   filteredTodos = computed(() => {
     const serverFilteredTodos = this.serverFilteredTodos();
     return this.todoService.filterTodos(serverFilteredTodos, {
-      //owner: this.todoOwner(),
+      owner: this.todoOwner(),
       category: this.todoCategory(),
       body: this.todoBody(),
-      //status: this.todoStatus()
     });
   });
 }
