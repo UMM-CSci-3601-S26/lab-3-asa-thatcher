@@ -21,7 +21,6 @@ export class AddTodoComponent {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
-
   addTodoForm = new FormGroup({
     // We allow alphanumeric input and limit the length for owner.
     owner: new FormControl('', Validators.compose([
@@ -40,10 +39,30 @@ export class AddTodoComponent {
         }
       },
     ])),
-
-    // The category and body fields don't matter much
-    category: new FormControl(''),
-    body: new FormControl(''),
+    body: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(500),
+      (fc) => {
+        if (fc.value.toLowerCase() === 'abc123' || fc.value.toLowerCase() === '123abc') {
+          return ({existingName: true});
+        } else {
+          return null;
+        }
+      },
+    ])),
+    category: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(50),
+      (fc) => {
+        if (fc.value.toLowerCase() === 'abc123' || fc.value.toLowerCase() === '123abc') {
+          return ({existingName: true});
+        } else {
+          return null;
+        }
+      },
+    ])),
 
     // Status must be a boolean value (true or false)
     status: new FormControl<boolean>(null, Validators.compose([
@@ -56,7 +75,6 @@ export class AddTodoComponent {
       }
     ])),
   });
-
 
   // We can only display one error at a time,
   // the order the messages are defined in is the order they will display in.
@@ -74,11 +92,11 @@ export class AddTodoComponent {
     body: [
       {type: 'required', message: 'Body is required'},
       {type: 'minlength', message: 'Body must be at least 2 characters long'},
-      {type: 'maxlength', message: 'Bidt cannot be more than 500 characters long'}
+      {type: 'maxlength', message: 'Bidt cannot be more than 50 characters long'}
     ],
     status: [
       {type: 'required', message: 'Status is required'},
-      {type: 'boolean', message: 'Status must be a valid boolean value (true or false)'},
+      {type: 'boolean', message: 'Status must be a valid boolean value (true or false)'}, // The form control on the add-todo page converts complete/incomplete to true/false, so this shouldn't ever error
     ],
   };
 
@@ -129,5 +147,4 @@ export class AddTodoComponent {
       },
     });
   }
-
 }
