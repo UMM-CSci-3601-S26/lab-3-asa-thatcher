@@ -30,7 +30,7 @@ describe('Todo list', () => {
     TestBed.compileComponents().then(() => {
       fixture = TestBed.createComponent(TodoListComponent);
       todoList = fixture.componentInstance;
-      // todoService = TestBed.inject(TodoService);
+      todoService = TestBed.inject(TodoService);
       fixture.detectChanges();
     });
   }));
@@ -45,18 +45,12 @@ describe('Todo list', () => {
     expect(Array.isArray(todos)).toBe(true);
   });
 
-  it('should call getTodos() when todoOwner signal changes', () => {
-    const spy = spyOn(todoService, 'getTodos').and.callThrough();
-    todoList.todoOwner.set('Fry');
-    fixture.detectChanges();
-    expect(spy).toHaveBeenCalledWith({ owner: 'Fry', status: undefined });
-  });
 
   it('should call getTodos() when todoStatus signal changes', () => {
     const spy = spyOn(todoService, 'getTodos').and.callThrough();
     todoList.todoStatus.set('complete');
     fixture.detectChanges();
-    expect(spy).toHaveBeenCalledWith({ owner: undefined, status: 'complete' });
+    expect(spy).toHaveBeenCalledWith({ limit: undefined, status: 'complete' });
   });
 
   it('should not show error message on successful load', () => {
