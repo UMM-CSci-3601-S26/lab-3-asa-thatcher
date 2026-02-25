@@ -12,7 +12,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 describe('Todo list', () => {
   let todoList: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
-  // let todoService: TodoService;
+  let todoService: TodoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('Todo list', () => {
     TestBed.compileComponents().then(() => {
       fixture = TestBed.createComponent(TodoListComponent);
       todoList = fixture.componentInstance;
-      // todoService = TestBed.inject(TodoService);
+      todoService = TestBed.inject(TodoService);
       fixture.detectChanges();
     });
   }));
@@ -45,19 +45,13 @@ describe('Todo list', () => {
     expect(Array.isArray(todos)).toBe(true);
   });
 
-  // it('should call getTodos() when todoRole signal changes', () => {
-  //   const spy = spyOn(todoService, 'getTodos').and.callThrough();
-  //   todoList.todoRole.set('admin');
-  //   fixture.detectChanges();
-  //   expect(spy).toHaveBeenCalledWith({ role: 'admin', age: undefined });
-  // });
 
-  // it('should call getTodos() when todoAge signal changes', () => {
-  //   const spy = spyOn(todoService, 'getTodos').and.callThrough();
-  //   todoList.todoAge.set(25);
-  //   fixture.detectChanges();
-  //   expect(spy).toHaveBeenCalledWith({ role: undefined, age: 25 });
-  // });
+  it('should call getTodos() when todoStatus signal changes', () => {
+    const spy = spyOn(todoService, 'getTodos').and.callThrough();
+    todoList.todoStatus.set('complete');
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalledWith({ limit: undefined, status: 'complete' });
+  });
 
   it('should not show error message on successful load', () => {
     expect(todoList.errMsg()).toBeUndefined();

@@ -8,7 +8,6 @@
       <mat-card-content>
 
         <div class="flex-row gap-8 flex-wrap">
-          <!-- Examples of filtering in Angular -->
 
           <mat-form-field class="input-field">
             <mat-label>Owner</mat-label>
@@ -23,6 +22,28 @@
             <mat-label>Category</mat-label>
             <input matInput data-test="todoCategoryInput" placeholder="Filter by category" [(ngModel)]="todoCategory">
             <mat-hint>Filtered on client</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field class="input-field">
+            <mat-label>Body</mat-label>
+            <input matInput data-test="todoCategoryInput" placeholder="Filter by body" [(ngModel)]="todoBody">
+            <mat-hint>Filtered on client</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field class="input-field">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="todoStatus" data-test="todoStatusSelect">
+              <mat-option>--</mat-option>
+              <mat-option value="complete">Complete</mat-option>
+              <mat-option value="incomplete">Incomplete</mat-option>
+            </mat-select>
+            <mat-hint>Filtered on server</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field class="input-field">
+            <mat-label>Limit</mat-label>
+            <input matInput data-test="todoLimitInput" type="number" placeholder="Limit # of todos" min="0" [(ngModel)]="todoLimit">
+            <mat-hint>Limited on server</mat-hint>
           </mat-form-field>
         </div>
 
@@ -67,7 +88,6 @@
             <a mat-list-item [routerLink]="['/todo', todo._id]" class="todo-list-item">
               <span matListItemTitle mat-line class="todo-list-owner"> {{todo.owner}} </span>
               <span matListItemTitle mat-line class="todo-list-category"> {{todo.category}} </span>
-              <!--<span matListItemLine class="user-list-role"> {{todo.role}} </span>-->
             </a>
             }
           </mat-nav-list>
@@ -88,9 +108,6 @@
     </mat-error>
   </div>
   }
-
-  <!-- Maybe this should be a pop-up instead of just a text message? Not sure. -->
-
 </div>
 
 <button mat-fab class="add-todo-fab" matTooltip="Add Todo" matTooltipPosition="left" routerLink="/todos/new"
