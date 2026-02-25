@@ -12,7 +12,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 describe('Todo list', () => {
   let todoList: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
-  // let todoService: TodoService;
+  let todoService: TodoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -45,19 +45,19 @@ describe('Todo list', () => {
     expect(Array.isArray(todos)).toBe(true);
   });
 
-  // it('should call getTodos() when todoRole signal changes', () => {
-  //   const spy = spyOn(todoService, 'getTodos').and.callThrough();
-  //   todoList.todoRole.set('admin');
-  //   fixture.detectChanges();
-  //   expect(spy).toHaveBeenCalledWith({ role: 'admin', age: undefined });
-  // });
+  it('should call getTodos() when todoOwner signal changes', () => {
+    const spy = spyOn(todoService, 'getTodos').and.callThrough();
+    todoList.todoOwner.set('Fry');
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalledWith({ owner: 'Fry', status: undefined });
+  });
 
-  // it('should call getTodos() when todoAge signal changes', () => {
-  //   const spy = spyOn(todoService, 'getTodos').and.callThrough();
-  //   todoList.todoAge.set(25);
-  //   fixture.detectChanges();
-  //   expect(spy).toHaveBeenCalledWith({ role: undefined, age: 25 });
-  // });
+  it('should call getTodos() when todoStatus signal changes', () => {
+    const spy = spyOn(todoService, 'getTodos').and.callThrough();
+    todoList.todoStatus.set('complete');
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalledWith({ owner: undefined, status: 'complete' });
+  });
 
   it('should not show error message on successful load', () => {
     expect(todoList.errMsg()).toBeUndefined();
